@@ -13,30 +13,72 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-#ifndef APERTIUM_TAGGER_H
-#define APERTIUM_TAGGER_H
+#ifndef TAGGER_H
+#define TAGGER_H
 
-#include "apertium_config.h"
 
-#include "basic_stream_tagger.h"
-#include "basic_stream_tagger_trainer.h"
-#include "basic_tagger.h"
+#include <cerrno>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <fstream>
+#include <iomanip>
+#include <ios>
+#include <iostream>
+#include <locale>
+#include <sstream>
+#include <string>
+#include <unistd.h>
+
 #include "constructor_eq_delete.h"
-#include "file_tagger.h"
 #include "optional.h"
 
 #include "getopt_long.h"
 #include <string>
+
+#include "apertium_config.h"
+
+#include "align.h"
+#include "basic_exception_type.h"
+#include "basic_stream_tagger.h"
+#include "basic_stream_tagger_trainer.h"
+#include "basic_tagger.h"
+#include "err_exception.h"
+#include "exception.h"
+#include "file_tagger.h"
+#include "linebreak.h"
+#include "stream_5_3_1_tagger.h"
+#include "stream_5_3_1_tagger_trainer.h"
+#include "stream_5_3_2_tagger.h"
+#include "stream_5_3_2_tagger_trainer.h"
+#include "stream_5_3_3_tagger.h"
+#include "stream_5_3_3_tagger_trainer.h"
+#include <apertium/perceptron_tagger.h>
+#include <apertium/file_morpho_stream.h>
+#include <apertium/hmm.h>
+#include <apertium/lswpost.h>
+#include <apertium/tagger_word.h>
+#include <apertium/shell_utils.h>
+
+#include <lttoolbox/lt_locale.h>
 
 namespace Apertium {
 class apertium_tagger : private constructor_eq_delete {
 public:
   apertium_tagger(int &argc, char **&argv);
 
-private:
-  enum FunctionTypeType { Unigram, SlidingWindow, Perceptron };
-  enum UnigramType { Stream_5_3_1, Stream_5_3_2, Stream_5_3_3 };
+protected:
   enum FunctionType { Tagger, Retrain, Supervised, Train };
+  void functionTypeOptionCase(const FunctionType &FunctionType_);
+  Apertium::Optional<FunctionType> TheFunctionType;
+  enum FunctionTypeType { Unigram, SlidingWindow, Perceptron };
+  void functionTypeTypeOptionCase(const FunctionTypeType &FunctionTypeType_);
+  void g_FILE_Tagger(Apertium::FILE_Tagger &FILE_Tagger_);
+  Apertium::Optional<FunctionTypeType> TheFunctionTypeType;
+  basic_Tagger::Flags TheFlags;
+
+private:
+  enum UnigramType { Stream_5_3_1, Stream_5_3_2, Stream_5_3_3 };
   static void help();
   static const struct option longopts[];
 
@@ -47,8 +89,6 @@ private:
   void flagOptionCase(bool (basic_Tagger::Flags::*GetFlag)() const,
                       void (basic_Tagger::Flags::*SetFlag)(const bool &));
   std::string option_string();
-  void functionTypeTypeOptionCase(const FunctionTypeType &FunctionTypeType_);
-  void functionTypeOptionCase(const FunctionType &FunctionType_);
   void getCgAugmentedModeArgument();
   void getIterationsArgument();
   unsigned long optarg_unsigned_long(const char *metavar);
@@ -69,7 +109,6 @@ private:
 
   void g_StreamTagger(StreamTagger &StreamTagger_);
   void s_StreamTaggerTrainer(StreamTaggerTrainer &StreamTaggerTrainer_);
-  void g_FILE_Tagger(FILE_Tagger &FILE_Tagger_);
   void r_FILE_Tagger(FILE_Tagger &FILE_Tagger_);
   void s_FILE_Tagger(FILE_Tagger &FILE_Tagger_);
   void t_FILE_Tagger(FILE_Tagger &FILE_Tagger_);
@@ -81,17 +120,12 @@ private:
 
 
   int The_indexptr;
-  Optional<int> FunctionTypeTypeOption_indexptr;
-  Optional<int> FunctionTypeOption_indexptr;
-
-
-  Optional<FunctionTypeType> TheFunctionTypeType;
-  Optional<UnigramType> TheUnigramType;
-  Optional<FunctionType> TheFunctionType;
+  Apertium::Optional<int> FunctionTypeTypeOption_indexptr;
+  Apertium::Optional<int> FunctionTypeOption_indexptr;
+  Apertium::Optional<UnigramType> TheUnigramType;
   unsigned long TheFunctionTypeOptionArgument;
   unsigned long CgAugmentedMode;
-  basic_Tagger::Flags TheFlags;
 };
 }
 
-#endif // APERTIUM_TAGGER_H
+#endif // TAGGER_H
