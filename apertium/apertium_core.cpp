@@ -14,14 +14,7 @@ public:
 };
 
 
-int main()
+int main(int argc, char *argv[])
 {
-  int argc;
-  char **argv;
-  argc = 3;
-  argv = (char**)malloc(sizeof(char*)*argc);
-  argv[0] = "apertium-tagger";
-  argv[1] = "-g";
-  argv[2] = "/usr/share/apertium/apertium-eng-spa/eng-spa.prob";
   apertium ap(argc, argv);
 }
