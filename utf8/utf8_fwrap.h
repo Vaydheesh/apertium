@@ -1,6 +1,7 @@
 #ifndef _UTF8_FWRAP_HPP
 #define _UTF8_FWRAP_HPP
 
+
 #include <utf8.h>
 #include <string>
 #include <iterator>
@@ -8,6 +9,28 @@
 #include <cstdio>
 #include <cwchar>
 #include <stdint.h>
+
+#define fputs_unlocked fputs
+
+#define fgetc_unlocked fgetc
+
+#define fputc_unlocked fputc
+
+#define fwrite_unlocked fwrite
+
+#define fread_unlocked fread
+
+#define fgetwc_unlocked fgetwc
+
+#define fputwc_unlocked fputwc
+
+#define fputws_unlocked fputws
+
+#if !HAVE_MBTOWC
+#include <cwchar>
+inline int wctomb(char *s, wchar_t wc) { return wcrtomb(s,wc,NULL); }
+inline int mbtowc(wchar_t *pwc, const char *s, size_t n) { return mbrtowc(pwc, s, n, NULL); }
+#endif
 
 #ifdef _WIN32
 	#define utf32to8 utf16to8
