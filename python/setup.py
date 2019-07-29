@@ -73,7 +73,6 @@ apertium_core_module = Extension(
     ],
     library_dirs= [
     '../../externallibs/win64/libxml2-2.9.3-win32-x86_64/lib',
-    'C:/Python37/libs',
     'C:/msys64/mingw64/lib',
     '../..externallibs/win64/pcre',
     '../../externallibs/win64/local-build',
